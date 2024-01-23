@@ -1,4 +1,5 @@
 import 'package:chatapp/src/features/authentication/auth.dart';
+import 'package:chatapp/src/features/authentication/domain/chats_manager.dart';
 import 'package:get_it/get_it.dart';
 
 final serviceLocator = GetIt.instance;
@@ -12,4 +13,5 @@ Future<void> init() async {
 
   serviceLocator
       .registerFactory(() => AuthCubit(authRepository: serviceLocator()));
+  serviceLocator.registerLazySingleton(() => ListChatsManager());
 }

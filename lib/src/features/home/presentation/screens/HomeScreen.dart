@@ -1,10 +1,19 @@
+import 'package:chatapp/src/features/authentication/domain/chats_manager.dart';
+import 'package:chatapp/src/features/authentication/domain/entities/chats_list_resp.dart';
+import 'package:chatapp/src/injector_container.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../chat/presentation/screens/ChatScreen.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ListChatsManager _listChatsManager = serviceLocator<ListChatsManager>();
 
   @override
   Widget build(BuildContext context) {
@@ -66,436 +75,9 @@ class HomeScreen extends StatelessWidget {
                       topRight: Radius.circular(50),
                     )),
                 child: ListView(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const ChatScreen()));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 26.0, top: 35, right: 10),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30.r,
-                              backgroundImage:
-                                  Image.asset('assets/images/chat111.png')
-                                      .image,
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Danny Hopkins',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: ('Quicksand'),
-                                          fontSize: 16.h),
-                                    ),
-                                    SizedBox(
-                                      width: 140.w,
-                                    ),
-                                    const Text(
-                                      '08:43',
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 5.h,
-                                ),
-                                const Text(
-                                  'dannylove@gmail.com',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat222.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Bobby LangFod',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(width: 150.w),
-                                  const Text(
-                                    'Tue',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              const Text(
-                                'Will do,suer,thank you',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat333.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'William Wiles',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(width: 170.w),
-                                  const Text(
-                                    'Sun',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              const Text(
-                                'Uploded File',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat555.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'James Edlen',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(
-                                    width: 150.w,
-                                  ),
-                                  const Text(
-                                    '23 Mar',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              const Text(
-                                "Were is another tutorial",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat666.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'James Edlen',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(
-                                    width: 150.w,
-                                  ),
-                                  const Text(
-                                    '23 Mar',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              const Text(
-                                "Were is another tutorial",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat777.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'James Edlen',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(
-                                    width: 150.w,
-                                  ),
-                                  const Text(
-                                    '23 Mar',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              const Text(
-                                "Were is another tutorial",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat777.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'James Edlen',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(
-                                    width: 150.w,
-                                  ),
-                                  const Text(
-                                    '23 Mar',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 5.h),
-                              const Text(
-                                "Were is another tutorial",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat777.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'James Edlen',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(
-                                    width: 150.w,
-                                  ),
-                                  const Text(
-                                    '23 Mar',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              const Text(
-                                "Were is another tutorial",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 26.0, top: 35, right: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30.r,
-                            backgroundImage:
-                                Image.asset('assets/images/chat777.png').image,
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'James Edlen',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: ('Quicksand'),
-                                        fontSize: 16.h),
-                                  ),
-                                  SizedBox(
-                                    width: 150.w,
-                                  ),
-                                  const Text(
-                                    '23 Mar',
-                                    style: TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              const Text(
-                                "Were is another tutorial",
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    children: _listChatsManager.chatsUser!
+                        .map((e) => _chatItem(chatUser: e))
+                        .toList()),
               ),
             ],
           ),
@@ -690,5 +272,60 @@ class HomeScreen extends StatelessWidget {
         width: 22.w,
       ),
     ];
+  }
+
+  Widget _chatItem({required ChatsUserResp chatUser}) {
+    return GestureDetector(
+      onTap: () {
+        // Navigator.push(context,
+        // MaterialPageRoute(builder: (context) => const ChatScreen()));
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(left: 26.0, top: 35, right: 10),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30.r,
+              backgroundImage: Image.asset('assets/images/chat111.png').image,
+            ),
+            SizedBox(
+              width: 10.w,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      chatUser.nombre ?? '',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: ('Quicksand'),
+                          fontSize: 16.h),
+                    ),
+                    SizedBox(
+                      width: 140.w,
+                    ),
+                    const Text(
+                      '08:43',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5.h,
+                ),
+                Text(
+                  chatUser.message ?? '',
+                  style: const TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:chatapp/src/features/authentication/auth.dart';
+import 'package:chatapp/src/features/authentication/domain/chats_manager.dart';
+import 'package:chatapp/src/features/home/presentation/screens/HomeScreen.dart';
 import 'package:chatapp/src/injector_container.dart';
 import 'package:chatapp/src/shared/widgets/progress_indicator.dart';
 import 'package:chatapp/src/shared/widgets/custom_textform_field_widget.dart';
@@ -171,6 +173,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
           showGlobalSnackbar(context,
               message: state.message ?? 'Algo salió mal');
+        } else if (state is AuthLoginSuccesState) {
+          Navigator.pop(context);
+          _authCubit.listChats();
+        } else if (state is AuthGetListChatSuccessState) {
+          Navigator.pop(context);
+          ListChatsManager listChatsManager =
+              serviceLocator<ListChatsManager>();
+          listChatsManager.chatsUser = state.chatsUserList;
+          setState(() {});
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => HomeScreen()));
         } else {
           Navigator.pop(context);
         }
