@@ -1,7 +1,12 @@
+import 'package:chatapp/src/features/authentication/auth.dart';
+import 'package:chatapp/src/injector_container.dart';
+import 'package:chatapp/src/shared/widgets/progress_indicator.dart';
 import 'package:chatapp/src/shared/widgets/custom_textform_field_widget.dart';
 import 'package:chatapp/src/shared/widgets/default_button_widget.dart';
+import 'package:chatapp/src/shared/widgets/snackbar_global.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -15,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthCubit _authCubit = serviceLocator<AuthCubit>();
   bool isShowPassword = true;
   @override
   Widget build(BuildContext context) {
@@ -28,6 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildAuthCubitListener(),
+
                 SizedBox(height: 150.h),
                 Text('Bienvenido a Chat app',
                     style:
@@ -71,6 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: DefaultButton(
                         label: 'Iniciar sesión',
                         onPressed: () {
+                          _authCubit.login(
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                          );
                           // navigateTo(context, page: const DashboardScreen());
                         })),
                 SizedBox(height: 20.h),
@@ -143,6 +155,27 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  _buildAuthCubitListener() {
+    return BlocListener<AuthCubit, AuthState>(
+      bloc: _authCubit,
+      listener: (context, state) async {
+        if (state is AuthLoadingState) {
+          showProgressDialog(
+            context,
+          );
+        } else if (state is AuthErrorState) {
+          Navigator.pop(context);
+
+          showGlobalSnackbar(context,
+              message: state.message ?? 'Algo salió mal');
+        } else {
+          Navigator.pop(context);
+        }
+      },
+      child: const SizedBox(),
     );
   }
 }

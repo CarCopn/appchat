@@ -1,12 +1,20 @@
+import 'package:chatapp/src/config/enviroment.dart';
 import 'package:chatapp/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'src/features/home/presentation/screens/HomeScreen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:chatapp/src/injector_container.dart' as di;
 
-void main() {
+void main() async {
+  await Enviroment.initEnviroment();
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  await di.init();
+
   runApp(const MyApp());
 }
 
