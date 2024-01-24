@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:chatapp/src/errors/failure.dart';
+import 'package:chatapp/src/features/authentication/domain/entities/chat_messages_resp.dart';
 import 'package:chatapp/src/features/authentication/domain/entities/chats_list_resp.dart';
 import 'package:chatapp/src/features/authentication/domain/repositories/auth_respository.dart';
 
@@ -27,7 +28,7 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
-  void listChats() async {
+  Future<void> listChats() async {
     emit(AuthLoadingState());
     final result = await authRepository.listChats();
     result.fold((error) {
@@ -36,6 +37,19 @@ class AuthCubit extends Cubit<AuthState> {
       }
     }, (result) async {
       emit(AuthGetListChatSuccessState(chatsUserList: result));
+    });
+  }
+
+  Future<void> getChatWithIDUser({required String idOtherPerson}) async {
+    emit(AuthLoadingGetMessagesState());
+    final result =
+        await authRepository.getChatWithIDUser(idOtherPerson: idOtherPerson);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthGetChatMessagesSuccessState(chatsToShow: result));
     });
   }
 }

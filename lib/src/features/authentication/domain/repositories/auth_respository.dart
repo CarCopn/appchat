@@ -9,4 +9,7 @@ abstract class AuthRepository {
   });
 
   Future<Either<Failure, List<ChatsUserResp>?>> listChats();
+
+  Future<Either<Failure, dynamic>> getChatWithIDUser(
+      {required String idOtherPerson});
 }

@@ -16,12 +16,14 @@ class ChatsUserResp {
   String? nombre;
   String? message;
   String? otherPersonId;
+  DateTime? createdAt;
 
   ChatsUserResp({
     this.id,
     this.nombre,
     this.message,
     this.otherPersonId,
+    this.createdAt,
   });
 
   factory ChatsUserResp.fromJson(Map<String, dynamic> json) => ChatsUserResp(
@@ -29,6 +31,7 @@ class ChatsUserResp {
         nombre: json["nombre"],
         message: json["message"],
         otherPersonId: json["other_person_id"],
+        createdAt: DateTime.parse(json["created_at"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -36,5 +39,6 @@ class ChatsUserResp {
         "nombre": nombre,
         "message": message,
         "other_person_id": otherPersonId,
+        "created_at": createdAt?.toIso8601String(),
       };
 }

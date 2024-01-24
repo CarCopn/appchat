@@ -8,6 +8,13 @@ final class AuthInitial extends AuthState {}
 
 class AuthLoadingState extends AuthState {}
 
+class AuthLoadingGetMessagesState extends AuthState {}
+
+class AuthGetChatMessagesSuccessState extends AuthState {
+  List<ChatDetailsWithUserResp>? chatsToShow;
+  AuthGetChatMessagesSuccessState({this.chatsToShow});
+}
+
 class AuthLoginSuccesState extends AuthState {}
 
 class AuthGetListChatSuccessState extends AuthState {

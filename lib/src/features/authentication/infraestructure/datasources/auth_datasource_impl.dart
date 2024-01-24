@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:chatapp/src/config/enviroment.dart';
 import 'package:chatapp/src/features/authentication/domain/datasources/auth_datasource.dart';
+import 'package:chatapp/src/features/authentication/domain/entities/chat_messages_resp.dart';
 import 'package:chatapp/src/features/authentication/domain/entities/chats_list_resp.dart';
 import 'package:chatapp/src/features/authentication/infraestructure/errors/errors.dart';
 import 'package:dio/dio.dart';
@@ -72,6 +73,52 @@ class AuthDatasourceImpl extends AuthDatasource {
       } else if (responseInfo['status'] == 'Ok') {
         {
           var resp = chatsUserRespFromJson(jsonEncode(responseInfo['data']));
+          return resp;
+        }
+      } else {
+        // return UserNew();
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisa tu conexiòn a internet.');
+      }
+      throw WrongCredentials();
+    } catch (e) {
+      if (e is CustomError) {
+        throw CustomError(e.message);
+      }
+      throw CustomError('Algo salió mal.');
+
+      // throw Exception();
+    }
+    return null;
+  }
+
+  @override
+  Future<dynamic> getChatWithIDUser({required String idOtherPerson}) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    try {
+      String token = prefs.getString('token') ?? '';
+      String usuarioId = prefs.getString('usuario') ?? '';
+      final response = await httpClient.post(
+          Uri.parse('${Enviroment.apiUrl}/listarConversacion.php'),
+          body: {
+            'token': token,
+            'id': usuarioId,
+            'other_person_id': idOtherPerson,
+          });
+
+      log('resp ${response.body}');
+      var responseInfo = jsonDecode(response.body);
+
+      if (responseInfo['status'] == 'Error') {
+        throw CustomError(responseInfo['mensaje']);
+      } else if (responseInfo['status'] == 'Ok') {
+        {
+          var resp =
+              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
+
           return resp;
         }
       } else {

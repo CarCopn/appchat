@@ -18,4 +18,9 @@ class AuthService {
   Future<Either<Failure, List<ChatsUserResp>?>> listChats() async {
     return await repository.listChats();
   }
+
+  Future<Either<Failure, dynamic>> getChatWithIDUser(
+      {required String idOtherPerson}) async {
+    return await repository.getChatWithIDUser(idOtherPerson: idOtherPerson);
+  }
 }

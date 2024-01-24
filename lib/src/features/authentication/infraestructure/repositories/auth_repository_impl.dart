@@ -39,4 +39,18 @@ class AuthRepositoryImpl extends AuthRepository {
       return Left(GeneralFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, dynamic>> getChatWithIDUser(
+      {required String idOtherPerson}) async {
+    try {
+      var result = await remoteDataSource.getChatWithIDUser(
+          idOtherPerson: idOtherPerson);
+      return Right(result);
+    } on CustomError catch (e) {
+      return Left(CustomFailure(message: e.message, codeStatus: 1));
+    } on GeneralException catch (e) {
+      return Left(GeneralFailure(message: e.message));
+    }
+  }
 }
