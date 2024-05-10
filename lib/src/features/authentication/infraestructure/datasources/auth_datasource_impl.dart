@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:chatapp/src/config/enviroment.dart';
 import 'package:chatapp/src/features/authentication/domain/datasources/auth_datasource.dart';
@@ -25,7 +24,6 @@ class AuthDatasourceImpl extends AuthDatasource {
         'password': password,
       });
 
-      log('resp ${response.body}');
       var responseInfo = jsonDecode(response.body);
 
       if (responseInfo['status'] == 'Error') {
@@ -65,7 +63,6 @@ class AuthDatasourceImpl extends AuthDatasource {
         'token': token,
       });
 
-      log('resp ${response.body}');
       var responseInfo = jsonDecode(response.body);
 
       if (responseInfo['status'] == 'Error') {
@@ -109,7 +106,6 @@ class AuthDatasourceImpl extends AuthDatasource {
             'other_person_id': idOtherPerson,
           });
 
-      log('resp ${response.body}');
       var responseInfo = jsonDecode(response.body);
 
       if (responseInfo['status'] == 'Error') {
