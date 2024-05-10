@@ -347,11 +347,13 @@ class _MessageBubbleState extends State<MessageBubble> {
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          CircularProgressIndicator(
-                            color: Colors.blue,
-                            value: progress,
-                            backgroundColor: Colors.grey,
-                          ),
+                          !fileExist
+                              ? CircularProgressIndicator(
+                                  color: Colors.blue,
+                                  value: progress,
+                                  backgroundColor: Colors.grey,
+                                )
+                              : const SizedBox(),
                           Center(
                             child: Icon(
                               dowloading
