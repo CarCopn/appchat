@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  flutter_launcher_icons: ^0.9.2
   bloc: ^8.1.2
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1
@@ -49,6 +50,11 @@ dependencies:
   pull_to_refresh: ^2.0.0
   shared_preferences: ^2.2.2
   socket_io_client: ^2.0.3+1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "ic_launcher.png" 
 
 dev_dependencies:
   flutter_lints: ^2.0.0
