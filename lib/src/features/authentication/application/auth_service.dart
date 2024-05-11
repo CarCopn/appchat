@@ -23,4 +23,30 @@ class AuthService {
       {required String idOtherPerson}) async {
     return await repository.getChatWithIDUser(idOtherPerson: idOtherPerson);
   }
+
+  //   Future<Either<Failure, dynamic>> sendMessage(
+  //  {required String id,
+  //     required String otherPersonId,
+  //     required String message,
+  //     String? archivo,
+  //     String? extension}) async {
+  //   return await repository.sendMessage(idOtherPerson: idOtherPerson);
+
+  //     Future<dynamic> sendMessage(
+  //     {required String id,
+  //     required String otherPersonId,
+  //     required String message,
+  //     String? archivo,
+  //     String? extension});
+
+  // Future<dynamic> updateDataUser({
+  //   required String name,
+  //   required String clave,
+  //   required String claveExtra,
+  //   String? archivo,
+  // });
+
+  // Future<dynamic> liberarDatos({required String codigo});
+  // Future<dynamic> archivarDatos({required String otherPersonId});
+  // Future<dynamic> buscarUsuarios({required String usuario});
 }

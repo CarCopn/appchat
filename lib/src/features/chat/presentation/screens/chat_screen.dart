@@ -252,11 +252,11 @@ class _MessageBubbleState extends State<MessageBubble> {
   bool fileExist = false;
   double progress = 0;
   String fileName = '';
+  String typeDoc = '', nameFile = '';
   late String filePath;
 
   var getPathFile = LocalPathService();
   late CancelToken cancelToken;
-
   checkFileExist() async {
     cancelToken = CancelToken();
 
@@ -264,7 +264,6 @@ class _MessageBubbleState extends State<MessageBubble> {
     filePath = '$storePath/$fileName';
     bool fileExistCheck = await File(filePath).exists();
     setState(() {
-      log('fileExist $fileExist');
       fileExist = fileExistCheck;
     });
   }
@@ -311,6 +310,9 @@ class _MessageBubbleState extends State<MessageBubble> {
   void initState() {
     setState(() {
       fileName = Path.basename(widget.message);
+      nameFile = widget.message
+          .replaceAll('https://ecogreemperu.com/wsp/archivos/', '');
+      typeDoc = nameFile.substring(nameFile.indexOf('.'));
     });
     checkFileExist();
     super.initState();
@@ -318,57 +320,86 @@ class _MessageBubbleState extends State<MessageBubble> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.only(left: 70.w, bottom: 10.h),
+    return Align(
+        // padding: EdgeInsets.only(left: 0.w, bottom: 10.h),
+        alignment: Alignment.centerRight,
         child: Container(
+          width: 200,
+          height: 50,
+          margin: const EdgeInsets.only(bottom: 10),
+          padding:
+              const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               color: const Color(0xff7A8194)),
-          child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                children: [
-                  Text(
-                    widget.message.replaceAll(
-                        'https://ecogreemperu.com/wsp/archivos/', ''),
-                    style: const TextStyle(
-                      color: Colors.white,
+          child: Container(
+            width: 80,
+            height: 40,
+            padding: const EdgeInsets.only(
+              left: 5,
+              right: 15,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+              color: Colors.black.withOpacity(.4),
+            ),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      nameFile,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 20.w),
-                  GestureDetector(
-                      onTap: () {
-                        dowloading
-                            ? cancelDownload()
-                            : fileExist
-                                ? openFile()
-                                : startDownload();
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          !fileExist
-                              ? CircularProgressIndicator(
-                                  color: Colors.blue,
-                                  value: progress,
-                                  backgroundColor: Colors.grey,
-                                )
-                              : const SizedBox(),
-                          Center(
-                            child: Icon(
-                              dowloading
-                                  ? Icons.close
-                                  : fileExist
-                                      ? Icons.folder_open_rounded
-                                      : Icons.save,
-                              color: Colors.white,
-                              size: 16,
-                            ),
+                    Text(
+                      'Archivo $typeDoc',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(child: Container()),
+                GestureDetector(
+                    onTap: () {
+                      dowloading
+                          ? cancelDownload()
+                          : fileExist
+                              ? openFile()
+                              : startDownload();
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        !fileExist
+                            ? CircularProgressIndicator(
+                                color: Colors.blue,
+                                value: progress,
+                                backgroundColor: Colors.grey,
+                              )
+                            : const SizedBox(),
+                        Center(
+                          child: Icon(
+                            dowloading
+                                ? Icons.close
+                                : fileExist
+                                    ? Icons.folder_open_rounded
+                                    : Icons.save,
+                            color: Colors.white,
+                            size: 13,
                           ),
-                        ],
-                      )),
-                ],
-              )),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
         ));
   }
 }

@@ -23,11 +23,20 @@ class _HomeScreenState extends State<HomeScreen> {
   final ListChatsManager _listChatsManager = serviceLocator<ListChatsManager>();
 
   final AuthCubit _authCubit = serviceLocator<AuthCubit>();
-
+  final TextEditingController _nameCntrl = TextEditingController();
+  final TextEditingController _claveCntrl = TextEditingController();
+  final TextEditingController _claveExtraCntrl = TextEditingController();
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ListChatsManager listChatsManager = serviceLocator<ListChatsManager>();
   DateFormat format = DateFormat('yyyy-MM-dd – kk:mm');
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      showDialogConfirmCode(context);
+    });
+  }
 
   void _onRefresh() async {
     await _authCubit.listChats();
@@ -96,7 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'Mensajes',
@@ -106,13 +114,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 30.h,
                           color: Colors.white),
                     ),
+                    Expanded(child: Container()),
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialogEdit(context);
+                        },
+                        icon: Icon(
+                          Icons.edit_note_rounded,
+                          color: Colors.white,
+                          size: 35.h,
+                        )),
+                    IconButton(
+                        onPressed: () {
+                          showDialogSearchUsuario(context);
+                        },
                         icon: Icon(
                           Icons.search,
                           color: Colors.white,
                           size: 35.h,
-                        ))
+                        )),
                   ],
                 ),
               ),
@@ -153,6 +173,382 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  showDialogEdit(
+    BuildContext context,
+  ) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, setState) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.w))),
+                insetPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                contentPadding: EdgeInsets.zero,
+                content: Container(
+                    width: 428.w,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(60.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Actualizar Usuario',
+                              style: TextStyle(
+                                fontSize: 25.h,
+                                fontFamily: 'Arena',
+                                fontWeight: FontWeight.w700,
+                              )),
+                          SizedBox(height: 20.h),
+                          Row(children: [
+                            Container(
+                              width: 120.w,
+                              height: 50.h,
+                              alignment: Alignment.centerLeft,
+                              child: Text('Nombre',
+                                  style: TextStyle(
+                                    fontSize: 17.h,
+                                    fontFamily: 'Arena',
+                                    fontWeight: FontWeight.w700,
+                                  )),
+                            ),
+                            SizedBox(
+                              width: 120.w,
+                              height: 45.h,
+                              child: TextFormField(
+                                controller: _nameCntrl,
+                                textAlign: TextAlign.start,
+                                maxLength: 6,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1.0),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.black, width: 1.0),
+                                  ),
+                                  counter: SizedBox(),
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 0),
+                                ),
+                              ),
+                            ),
+                          ]),
+                          SizedBox(height: 20.h),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 120.w,
+                                height: 40.h,
+                                child: Text('Clave',
+                                    style: TextStyle(
+                                        fontSize: 17.h,
+                                        fontFamily: 'Arena',
+                                        fontWeight: FontWeight.w700)),
+                              ),
+                              SizedBox(
+                                width: 120.w,
+                                height: 45.h,
+                                child: TextFormField(
+                                  controller: _claveCntrl,
+                                  textAlign: TextAlign.start,
+                                  maxLength: 6,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    border: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 1.0),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 1.0),
+                                    ),
+                                    counter: SizedBox(),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 0),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20.h),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 120.w,
+                                height: 40.h,
+                                child: Text('Clave',
+                                    style: TextStyle(
+                                        fontSize: 17.h,
+                                        fontFamily: 'Arena',
+                                        fontWeight: FontWeight.w700)),
+                              ),
+                              SizedBox(
+                                width: 120.w,
+                                height: 45.h,
+                                child: TextFormField(
+                                  controller: _claveCntrl,
+                                  textAlign: TextAlign.start,
+                                  maxLength: 6,
+                                  keyboardType: TextInputType.number,
+                                  decoration: const InputDecoration(
+                                    border: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 1.0),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.black, width: 1.0),
+                                    ),
+                                    counter: SizedBox(),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 0),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 30.h),
+                          Align(
+                            alignment: const AlignmentDirectional(0, 0),
+                            child: Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 0, 0, 16),
+                              child: SizedBox(
+                                height: 52.h,
+                                width: 200.w,
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  color: Colors.black,
+                                  onPressed: () async {},
+                                  child: Text(
+                                    'Actualizar',
+                                    style: TextStyle(
+                                        fontSize: 18.h,
+                                        fontFamily: 'Arena',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+              );
+            },
+          );
+        });
+  }
+
+  showDialogConfirmCode(
+    BuildContext context,
+  ) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, setState) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.w))),
+                insetPadding: EdgeInsets.symmetric(horizontal: 10.w),
+                contentPadding: EdgeInsets.zero,
+                content: Container(
+                    width: 400.w,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 50),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Confirmar código de acceso',
+                              style: TextStyle(
+                                fontSize: 25.h,
+                                fontFamily: 'Arena',
+                                fontWeight: FontWeight.w700,
+                              )),
+                          SizedBox(height: 20.h),
+                          Container(
+                            width: 300.w,
+                            height: 50.h,
+                            alignment: Alignment.centerLeft,
+                            child: Text('Ingrese código de acceso:',
+                                style: TextStyle(
+                                  fontSize: 17.h,
+                                  fontFamily: 'Arena',
+                                )),
+                          ),
+                          SizedBox(
+                            width: 300.w,
+                            height: 45.h,
+                            child: TextFormField(
+                              controller: _nameCntrl,
+                              textAlign: TextAlign.start,
+                              maxLength: 6,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.black, width: 1.0),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.black, width: 1.0),
+                                ),
+                                counter: SizedBox(),
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 0),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30.h),
+                          Align(
+                            alignment: const AlignmentDirectional(0, 0),
+                            child: Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 0, 0, 16),
+                              child: SizedBox(
+                                height: 52.h,
+                                width: 200.w,
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  color: Colors.black,
+                                  onPressed: () async {},
+                                  child: Text(
+                                    'Validar',
+                                    style: TextStyle(
+                                        fontSize: 18.h,
+                                        fontFamily: 'Arena',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+              );
+            },
+          );
+        });
+  }
+
+  showDialogSearchUsuario(
+    BuildContext context,
+  ) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, setState) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20.w))),
+                insetPadding: EdgeInsets.symmetric(horizontal: 10.w),
+                contentPadding: EdgeInsets.zero,
+                content: Container(
+                    width: 400.w,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.r)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40.0, vertical: 50),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Buscar Usuario',
+                              style: TextStyle(
+                                fontSize: 25.h,
+                                fontFamily: 'Arena',
+                                fontWeight: FontWeight.w700,
+                              )),
+                          SizedBox(height: 20.h),
+                          Container(
+                            width: 300.w,
+                            height: 50.h,
+                            alignment: Alignment.centerLeft,
+                            child: Text('Ingrese usuario:',
+                                style: TextStyle(
+                                  fontSize: 17.h,
+                                  fontFamily: 'Arena',
+                                )),
+                          ),
+                          SizedBox(
+                            width: 300.w,
+                            height: 45.h,
+                            child: TextFormField(
+                              controller: _nameCntrl,
+                              textAlign: TextAlign.start,
+                              maxLength: 6,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.black, width: 1.0),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.black, width: 1.0),
+                                ),
+                                counter: SizedBox(),
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 0),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30.h),
+                          Align(
+                            alignment: const AlignmentDirectional(0, 0),
+                            child: Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0, 0, 0, 16),
+                              child: SizedBox(
+                                height: 52.h,
+                                width: 200.w,
+                                child: MaterialButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  color: Colors.black,
+                                  onPressed: () async {},
+                                  child: Text(
+                                    'Buscar',
+                                    style: TextStyle(
+                                        fontSize: 18.h,
+                                        fontFamily: 'Arena',
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+              );
+            },
+          );
+        });
   }
 
   List<Widget> getListOnlineContacts() {

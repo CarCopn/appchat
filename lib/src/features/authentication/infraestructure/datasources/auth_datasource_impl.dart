@@ -135,4 +135,232 @@ class AuthDatasourceImpl extends AuthDatasource {
     }
     return null;
   }
+
+  @override
+  Future<dynamic> sendMessage(
+      {required String id,
+      required String otherPersonId,
+      required String message,
+      String? archivo,
+      String? extension}) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    try {
+      String token = prefs.getString('token') ?? '';
+      String usuarioId = prefs.getString('usuario') ?? '';
+      final response = await httpClient
+          .post(Uri.parse('${Enviroment.apiUrl}/registroMensaje.php'), body: {
+        'token': token,
+        'id': usuarioId,
+        'other_person_id': otherPersonId,
+        'mensaje': message,
+        'archivo': archivo ?? '',
+        'extension_archivo': extension,
+      });
+
+      var responseInfo = jsonDecode(response.body);
+
+      if (responseInfo['status'] == 'Error') {
+        throw CustomError(responseInfo['mensaje']);
+      } else if (responseInfo['status'] == 'Ok') {
+        {
+          var resp =
+              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
+
+          return resp;
+        }
+      } else {
+        // return UserNew();
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisa tu conexiòn a internet.');
+      }
+      throw WrongCredentials();
+    } catch (e) {
+      if (e is CustomError) {
+        throw CustomError(e.message);
+      }
+      throw CustomError('Algo salió mal.');
+
+      // throw Exception();
+    }
+    return null;
+  }
+
+  @override
+  Future<dynamic> updateDataUser({
+    required String name,
+    required String clave,
+    required String claveExtra,
+    String? archivo,
+  }) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    try {
+      String token = prefs.getString('token') ?? '';
+      final response = await httpClient
+          .post(Uri.parse('${Enviroment.apiUrl}/actualizarDatos.php'), body: {
+        'token': token,
+        'nombre': name,
+        'clave': clave,
+        'claveExtra': claveExtra,
+        'archivo': archivo ?? '',
+      });
+
+      var responseInfo = jsonDecode(response.body);
+
+      if (responseInfo['status'] == 'Error') {
+        throw CustomError(responseInfo['mensaje']);
+      } else if (responseInfo['status'] == 'Ok') {
+        {
+          var resp =
+              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
+
+          return resp;
+        }
+      } else {
+        // return UserNew();
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisa tu conexiòn a internet.');
+      }
+      throw WrongCredentials();
+    } catch (e) {
+      if (e is CustomError) {
+        throw CustomError(e.message);
+      }
+      throw CustomError('Algo salió mal.');
+
+      // throw Exception();
+    }
+    return null;
+  }
+
+  @override
+  Future<dynamic> liberarDatos({required String codigo}) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    try {
+      String token = prefs.getString('token') ?? '';
+      final response = await httpClient
+          .post(Uri.parse('${Enviroment.apiUrl}/liberarDatos.php'), body: {
+        'token': token,
+        'codigo': codigo,
+      });
+
+      var responseInfo = jsonDecode(response.body);
+
+      if (responseInfo['status'] == 'Error') {
+        throw CustomError(responseInfo['mensaje']);
+      } else if (responseInfo['status'] == 'Ok') {
+        {
+          var resp =
+              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
+
+          return resp;
+        }
+      } else {
+        // return UserNew();
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisa tu conexiòn a internet.');
+      }
+      throw WrongCredentials();
+    } catch (e) {
+      if (e is CustomError) {
+        throw CustomError(e.message);
+      }
+      throw CustomError('Algo salió mal.');
+
+      // throw Exception();
+    }
+    return null;
+  }
+
+  @override
+  Future<dynamic> archivarDatos({required String otherPersonId}) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    try {
+      String token = prefs.getString('token') ?? '';
+      final response = await httpClient
+          .post(Uri.parse('${Enviroment.apiUrl}/archivarDatos.php'), body: {
+        'token': token,
+        'other_person_id': otherPersonId,
+      });
+
+      var responseInfo = jsonDecode(response.body);
+
+      if (responseInfo['status'] == 'Error') {
+        throw CustomError(responseInfo['mensaje']);
+      } else if (responseInfo['status'] == 'Ok') {
+        {
+          var resp =
+              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
+
+          return resp;
+        }
+      } else {
+        // return UserNew();
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisa tu conexiòn a internet.');
+      }
+      throw WrongCredentials();
+    } catch (e) {
+      if (e is CustomError) {
+        throw CustomError(e.message);
+      }
+      throw CustomError('Algo salió mal.');
+
+      // throw Exception();
+    }
+    return null;
+  }
+
+  @override
+  Future<dynamic> buscarUsuarios({required String usuario}) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    try {
+      String token = prefs.getString('token') ?? '';
+      final response = await httpClient
+          .post(Uri.parse('${Enviroment.apiUrl}/buscarUsuarios.php'), body: {
+        'token': token,
+        'usuario': usuario,
+      });
+
+      var responseInfo = jsonDecode(response.body);
+
+      if (responseInfo['status'] == 'Error') {
+        throw CustomError(responseInfo['mensaje']);
+      } else if (responseInfo['status'] == 'Ok') {
+        {
+          var resp =
+              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
+
+          return resp;
+        }
+      } else {
+        // return UserNew();
+      }
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        throw CustomError('Revisa tu conexiòn a internet.');
+      }
+      throw WrongCredentials();
+    } catch (e) {
+      if (e is CustomError) {
+        throw CustomError(e.message);
+      }
+      throw CustomError('Algo salió mal.');
+
+      // throw Exception();
+    }
+    return null;
+  }
 }

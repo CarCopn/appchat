@@ -53,4 +53,93 @@ class AuthRepositoryImpl extends AuthRepository {
       return Left(GeneralFailure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, dynamic>> sendMessage(
+      {required String id,
+      required String otherPersonId,
+      required String message,
+      String? archivo,
+      String? extension}) async {
+    try {
+      var result = await remoteDataSource.sendMessage(
+          id: id,
+          otherPersonId: otherPersonId,
+          message: message,
+          archivo: archivo,
+          extension: extension);
+      return Right(result);
+    } on CustomError catch (e) {
+      return Left(CustomFailure(message: e.message, codeStatus: 1));
+    } on GeneralException catch (e) {
+      return Left(GeneralFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> updateDataUser({
+    required String name,
+    required String clave,
+    required String claveExtra,
+    String? archivo,
+  }) async {
+    try {
+      var result = await remoteDataSource.updateDataUser(
+        name: name,
+        clave: clave,
+        claveExtra: claveExtra,
+        archivo: archivo,
+      );
+      return Right(result);
+    } on CustomError catch (e) {
+      return Left(CustomFailure(message: e.message, codeStatus: 1));
+    } on GeneralException catch (e) {
+      return Left(GeneralFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> liberarDatos(
+      {required String codigo}) async {
+    try {
+      var result = await remoteDataSource.liberarDatos(
+        codigo: codigo,
+      );
+      return Right(result);
+    } on CustomError catch (e) {
+      return Left(CustomFailure(message: e.message, codeStatus: 1));
+    } on GeneralException catch (e) {
+      return Left(GeneralFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> archivarDatos(
+      {required String otherPersonId}) async {
+    try {
+      var result = await remoteDataSource.archivarDatos(
+        otherPersonId: otherPersonId,
+      );
+      return Right(result);
+    } on CustomError catch (e) {
+      return Left(CustomFailure(message: e.message, codeStatus: 1));
+    } on GeneralException catch (e) {
+      return Left(GeneralFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> buscarUsuarios(
+      {required String usuario}) async {
+    try {
+      var result = await remoteDataSource.buscarUsuarios(
+        usuario: usuario,
+      );
+      return Right(result);
+    } on CustomError catch (e) {
+      return Left(CustomFailure(message: e.message, codeStatus: 1));
+    } on GeneralException catch (e) {
+      return Left(GeneralFailure(message: e.message));
+    }
+  }
 }
