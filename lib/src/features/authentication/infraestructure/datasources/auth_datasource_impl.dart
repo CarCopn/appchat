@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:chatapp/src/config/enviroment.dart';
 import 'package:chatapp/src/features/authentication/domain/datasources/auth_datasource.dart';
@@ -112,6 +113,9 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(responseInfo['mensaje']);
       } else if (responseInfo['status'] == 'Ok') {
         {
+          if (responseInfo['data'] == null) {
+            return [];
+          }
           var resp =
               chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
 
@@ -126,6 +130,7 @@ class AuthDatasourceImpl extends AuthDatasource {
       }
       throw WrongCredentials();
     } catch (e) {
+      log('error $e');
       if (e is CustomError) {
         throw CustomError(e.message);
       }
@@ -155,7 +160,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         'other_person_id': otherPersonId,
         'mensaje': message,
         'archivo': archivo ?? '',
-        'extension_archivo': extension,
+        'extension_archivo': extension ?? '',
       });
 
       var responseInfo = jsonDecode(response.body);
@@ -164,10 +169,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(responseInfo['mensaje']);
       } else if (responseInfo['status'] == 'Ok') {
         {
-          var resp =
-              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
-
-          return resp;
+          return true;
         }
       } else {
         // return UserNew();
@@ -181,6 +183,7 @@ class AuthDatasourceImpl extends AuthDatasource {
       if (e is CustomError) {
         throw CustomError(e.message);
       }
+      log('error $e');
       throw CustomError('Algo salió mal.');
 
       // throw Exception();
@@ -214,10 +217,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(responseInfo['mensaje']);
       } else if (responseInfo['status'] == 'Ok') {
         {
-          var resp =
-              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
-
-          return resp;
+          return true;
         }
       } else {
         // return UserNew();
@@ -256,10 +256,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(responseInfo['mensaje']);
       } else if (responseInfo['status'] == 'Ok') {
         {
-          var resp =
-              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
-
-          return resp;
+          return true;
         }
       } else {
         // return UserNew();
@@ -298,10 +295,7 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(responseInfo['mensaje']);
       } else if (responseInfo['status'] == 'Ok') {
         {
-          var resp =
-              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
-
-          return resp;
+          return true;
         }
       } else {
         // return UserNew();
@@ -340,10 +334,16 @@ class AuthDatasourceImpl extends AuthDatasource {
         throw CustomError(responseInfo['mensaje']);
       } else if (responseInfo['status'] == 'Ok') {
         {
-          var resp =
-              chatDetailsWithUserRespFromJson(jsonEncode(responseInfo['data']));
-
-          return resp;
+          if (responseInfo['cantidad'] == 0) {
+            throw CustomError('No se encontrarón usuarios.');
+          } else {
+            return ChatsUserResp(
+                id: responseInfo['data'][0]['id'],
+                nombre: responseInfo['data'][0]['nombre_apellido'],
+                message: '',
+                otherPersonId: responseInfo['data'][0]['id'],
+                createdAt: DateTime.now());
+          }
         }
       } else {
         // return UserNew();

@@ -26,3 +26,16 @@ class AuthErrorState extends AuthState {
   String? message;
   AuthErrorState({this.message});
 }
+
+class AuthSendMessageSuccessState extends AuthState {}
+
+class AuthChatsGrantedAccessState extends AuthState {}
+
+class AuthUpdateDataSuccessState extends AuthState {}
+
+class AuthArchiveDataSuccessState extends AuthState {}
+
+class AuthGetDataUsersState extends AuthState {
+  dynamic dataUser;
+  AuthGetDataUsersState({this.dataUser});
+}

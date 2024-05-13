@@ -180,7 +180,10 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pop(context);
           ListChatsManager listChatsManager =
               serviceLocator<ListChatsManager>();
-          listChatsManager.chatsUser = state.chatsUserList;
+          listChatsManager.chatsUser = [
+            ...listChatsManager.chatsUser ?? [],
+            ...state.chatsUserList ?? []
+          ];
           setState(() {});
           Navigator.push(
               context, MaterialPageRoute(builder: (_) => const HomeScreen()));

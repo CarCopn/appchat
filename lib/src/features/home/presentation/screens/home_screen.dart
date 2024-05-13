@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chatapp/src/features/authentication/auth.dart';
 import 'package:chatapp/src/features/authentication/domain/chats_manager.dart';
 import 'package:chatapp/src/features/authentication/domain/entities/chats_list_resp.dart';
@@ -6,9 +8,11 @@ import 'package:chatapp/src/injector_container.dart';
 import 'package:chatapp/src/shared/widgets/progress_indicator.dart';
 import 'package:chatapp/src/shared/widgets/snackbar_global.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -24,8 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final AuthCubit _authCubit = serviceLocator<AuthCubit>();
   final TextEditingController _nameCntrl = TextEditingController();
+  final TextEditingController _nameSearchCntrl = TextEditingController();
   final TextEditingController _claveCntrl = TextEditingController();
   final TextEditingController _claveExtraCntrl = TextEditingController();
+  final TextEditingController _codeExtraCntrl = TextEditingController();
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   ListChatsManager listChatsManager = serviceLocator<ListChatsManager>();
@@ -68,12 +74,43 @@ class _HomeScreenState extends State<HomeScreen> {
               MaterialPageRoute(builder: (context) => const ChatScreen()));
           setState(() {});
         } else if (state is AuthErrorState) {
+          Navigator.pop(context);
+
           showGlobalSnackbar(context,
               message: state.message ?? 'Algo salió mal');
         } else if (state is AuthGetListChatSuccessState) {
           listChatsManager.chatsUser = state.chatsUserList;
 
           setState(() {});
+        } else if (state is AuthChatsGrantedAccessState) {
+          Navigator.pop(context);
+
+          _authCubit.listChats();
+        } else if (state is AuthGetListChatSuccessState) {
+          Navigator.pop(context);
+          ListChatsManager listChatsManager =
+              serviceLocator<ListChatsManager>();
+          listChatsManager.chatsUser = state.chatsUserList;
+
+          setState(() {});
+        } else if (state is AuthUpdateDataSuccessState) {
+          Navigator.pop(context);
+          _nameCntrl.clear();
+          _claveCntrl.clear();
+          _claveExtraCntrl.clear();
+          showGlobalSnackbar(context, message: 'Se actualizó con ésito');
+          setState(() {});
+        } else if (state is AuthArchiveDataSuccessState) {
+          Navigator.pop(context);
+          _authCubit.listChats();
+        } else if (state is AuthGetDataUsersState) {
+          Navigator.pop(context);
+
+          _listChatsManager.chatsUser = [
+            state.dataUser,
+            ..._listChatsManager.chatsUser ?? [],
+          ];
+          _authCubit.getChatWithIDUser(idOtherPerson: state.dataUser.id);
         } else {
           Navigator.pop(context);
         }
@@ -98,77 +135,98 @@ class _HomeScreenState extends State<HomeScreen> {
         onRefresh: _onRefresh,
         onLoading: _onLoading,
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildAuthCubitListener(),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Row(
-                  children: [
-                    Text(
-                      'Mensajes',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontFamily: ('Quicksand'),
-                          fontSize: 30.h,
-                          color: Colors.white),
-                    ),
-                    Expanded(child: Container()),
-                    IconButton(
-                        onPressed: () {
-                          showDialogEdit(context);
-                        },
-                        icon: Icon(
-                          Icons.edit_note_rounded,
-                          color: Colors.white,
-                          size: 35.h,
-                        )),
-                    IconButton(
-                        onPressed: () {
-                          showDialogSearchUsuario(context);
-                        },
-                        icon: Icon(
-                          Icons.search,
-                          color: Colors.white,
-                          size: 35.h,
-                        )),
-                  ],
-                ),
-              ),
-              SizedBox(height: 5.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: const Text(
-                  'Recientes',
-                  style: TextStyle(
-                    color: Colors.white,
+          child: SizedBox(
+            height: 920.h,
+            width: 428.w,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildAuthCubitListener(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Mensajes',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: ('Quicksand'),
+                            fontSize: 30.h,
+                            color: Colors.white),
+                      ),
+                      Expanded(child: Container()),
+                      IconButton(
+                          onPressed: () {
+                            showDialogEdit(context);
+                          },
+                          icon: Icon(
+                            Icons.edit_note_rounded,
+                            color: Colors.white,
+                            size: 35.h,
+                          )),
+                      IconButton(
+                          onPressed: () {
+                            showDialogSearchUsuario(context);
+                          },
+                          icon: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                            size: 35.h,
+                          )),
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(height: 15.h),
-              SizedBox(
-                  height: 130.h,
-                  child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      children: getListOnlineContacts())),
-              Expanded(child: Container()),
-              Container(
-                height: 640.h,
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                    color: Color(0xff292F3F),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
+                SizedBox(height: 5.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: const Text(
+                    'Recientes',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15.h),
+                SizedBox(
+                    height: 130.h,
+                    child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        children: getListOnlineContacts())),
+                Expanded(child: Container()),
+                Container(
+                    height: 640.h,
+                    width: 428.w,
+                    padding: const EdgeInsets.only(top: 10),
+                    decoration: const BoxDecoration(
+                        color: Color(0xff292F3F),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(50),
+                          topRight: Radius.circular(50),
+                        )),
+                    child: FutureBuilder(
+                      future: _authCubit.listChatsPeriodic(),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        return ListView.separated(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: _listChatsManager.chatsUser!.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final userChat =
+                                _listChatsManager.chatsUser?[index];
+
+                            return _chatItem(chatUser: userChat!);
+                          },
+                          separatorBuilder: (BuildContext context, int index) =>
+                              Container(
+                            height: 0.5,
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     )),
-                child: ListView(
-                    children: _listChatsManager.chatsUser!
-                        .map((e) => _chatItem(chatUser: e))
-                        .toList()),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -205,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontFamily: 'Arena',
                                 fontWeight: FontWeight.w700,
                               )),
-                          SizedBox(height: 20.h),
+                          SizedBox(height: 10.h),
                           Row(children: [
                             Container(
                               width: 120.w,
@@ -220,12 +278,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             SizedBox(
                               width: 120.w,
-                              height: 45.h,
                               child: TextFormField(
                                 controller: _nameCntrl,
                                 textAlign: TextAlign.start,
-                                maxLength: 6,
-                                keyboardType: TextInputType.number,
+                                onChanged: (x) => setState(() {}),
                                 decoration: const InputDecoration(
                                   border: UnderlineInputBorder(
                                     borderSide: BorderSide(
@@ -242,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ]),
-                          SizedBox(height: 20.h),
+                          SizedBox(height: 10.h),
                           Row(
                             children: [
                               SizedBox(
@@ -256,12 +312,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               SizedBox(
                                 width: 120.w,
-                                height: 45.h,
                                 child: TextFormField(
                                   controller: _claveCntrl,
                                   textAlign: TextAlign.start,
-                                  maxLength: 6,
-                                  keyboardType: TextInputType.number,
+                                  onChanged: (x) => setState(() {}),
                                   decoration: const InputDecoration(
                                     border: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -279,13 +333,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 20.h),
+                          SizedBox(height: 10.h),
                           Row(
                             children: [
                               SizedBox(
                                 width: 120.w,
                                 height: 40.h,
-                                child: Text('Clave',
+                                child: Text('Clave Extra',
                                     style: TextStyle(
                                         fontSize: 17.h,
                                         fontFamily: 'Arena',
@@ -293,12 +347,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               SizedBox(
                                 width: 120.w,
-                                height: 45.h,
                                 child: TextFormField(
-                                  controller: _claveCntrl,
+                                  controller: _claveExtraCntrl,
                                   textAlign: TextAlign.start,
-                                  maxLength: 6,
-                                  keyboardType: TextInputType.number,
+                                  onChanged: (x) => setState(() {}),
                                   decoration: const InputDecoration(
                                     border: UnderlineInputBorder(
                                       borderSide: BorderSide(
@@ -328,8 +380,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: MaterialButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15)),
-                                  color: Colors.black,
-                                  onPressed: () async {},
+                                  color: (_nameCntrl.text.isNotEmpty &&
+                                          _claveCntrl.text.isNotEmpty &&
+                                          _claveExtraCntrl.text.isNotEmpty)
+                                      ? Colors.black
+                                      : Colors.grey,
+                                  onPressed: () async {
+                                    if (_nameCntrl.text.isNotEmpty &&
+                                        _claveCntrl.text.isNotEmpty &&
+                                        _claveExtraCntrl.text.isNotEmpty) {
+                                      Navigator.pop(context);
+
+                                      _authCubit.actualizarDatos(
+                                          name: _nameCntrl.text,
+                                          clave: _claveCntrl.text,
+                                          claveExtra: _claveExtraCntrl.text);
+                                    }
+                                  },
                                   child: Text(
                                     'Actualizar',
                                     style: TextStyle(
@@ -395,11 +462,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           SizedBox(
                             width: 300.w,
-                            height: 45.h,
                             child: TextFormField(
-                              controller: _nameCntrl,
+                              controller: _codeExtraCntrl,
                               textAlign: TextAlign.start,
-                              maxLength: 6,
                               keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                 border: UnderlineInputBorder(
@@ -414,6 +479,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 contentPadding:
                                     EdgeInsets.symmetric(vertical: 0),
                               ),
+                              onChanged: (x) {
+                                setState(() {});
+                              },
                             ),
                           ),
                           SizedBox(height: 30.h),
@@ -428,8 +496,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: MaterialButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15)),
-                                  color: Colors.black,
-                                  onPressed: () async {},
+                                  color: _codeExtraCntrl.text.isNotEmpty
+                                      ? Colors.black
+                                      : Colors.grey,
+                                  onPressed: () async {
+                                    if (_codeExtraCntrl.text.isNotEmpty) {
+                                      Navigator.pop(context);
+                                      _authCubit.liberarDatos(
+                                          codeAccess: _codeExtraCntrl.text);
+                                    }
+                                  },
                                   child: Text(
                                     'Validar',
                                     style: TextStyle(
@@ -495,12 +571,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           SizedBox(
                             width: 300.w,
-                            height: 45.h,
                             child: TextFormField(
-                              controller: _nameCntrl,
+                              onChanged: (x) => setState(() {}),
+                              controller: _nameSearchCntrl,
                               textAlign: TextAlign.start,
-                              maxLength: 6,
-                              keyboardType: TextInputType.number,
                               decoration: const InputDecoration(
                                 border: UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -528,8 +602,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: MaterialButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15)),
-                                  color: Colors.black,
-                                  onPressed: () async {},
+                                  color: _nameSearchCntrl.text.isEmpty
+                                      ? Colors.grey
+                                      : Colors.black,
+                                  onPressed: () async {
+                                    if (_nameSearchCntrl.text.isNotEmpty) {
+                                      Navigator.pop(context);
+                                      _authCubit.buscarUsuarios(
+                                          usuario: _nameSearchCntrl.text);
+                                    }
+                                  },
                                   child: Text(
                                     'Buscar',
                                     style: TextStyle(
@@ -744,24 +826,33 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         _authCubit.getChatWithIDUser(
             idOtherPerson: chatUser.otherPersonId ?? '0');
+        listChatsManager.chatsSelected = chatUser;
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 26.0, top: 35, right: 10),
+        padding: const EdgeInsets.only(left: 26.0, top: 10, right: 10),
         child: Row(
           children: [
             CircleAvatar(
               radius: 30.r,
-              backgroundImage: Image.asset('assets/images/chat111.png').image,
+              backgroundImage: Image.network(
+                chatUser.imagen ?? '',
+                errorBuilder: (context, error, stackTrace) =>
+                    const Placeholder(),
+              ).image,
+              //  Image.asset('assets/images/chat111.png').image,
             ),
             SizedBox(
               width: 10.w,
             ),
             Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 340.h,
+                  width: 300.h,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
                         chatUser.nombre ?? '',
@@ -779,12 +870,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 5.h,
-                ),
-                Text(
-                  chatUser.message ?? '',
-                  style: const TextStyle(
-                    color: Colors.white70,
+                  width: 300.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 200.w,
+                        child: Text(
+                          chatUser.message ?? '',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Container()),
+                      IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            _authCubit.archivarDatos(
+                                otherPersonId: chatUser.otherPersonId ?? '');
+                          },
+                          icon: const Icon(
+                            Icons.drive_folder_upload_outlined,
+                            color: Colors.white,
+                          )),
+                    ],
                   ),
                 ),
               ],

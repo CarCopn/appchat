@@ -28,6 +28,19 @@ class AuthCubit extends Cubit<AuthState> {
     });
   }
 
+  Future<void> listChatsPeriodic() async {
+    await Future.delayed(const Duration(seconds: 10));
+    emit(AuthLoadingState());
+    final result = await authRepository.listChats();
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthGetListChatSuccessState(chatsUserList: result));
+    });
+  }
+
   Future<void> listChats() async {
     emit(AuthLoadingState());
     final result = await authRepository.listChats();
@@ -49,7 +62,111 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthErrorState(message: error.message));
       }
     }, (result) async {
-      emit(AuthGetChatMessagesSuccessState(chatsToShow: result));
+      List<ChatDetailsWithUserResp>? lista = [];
+      if (result.isEmpty) {
+        lista = null;
+      } else {
+        lista = result;
+      }
+      emit(AuthGetChatMessagesSuccessState(chatsToShow: lista));
+    });
+  }
+
+  Future<void> getChatWithIDUserPeriodic(
+      {required String idOtherPerson}) async {
+    await Future.delayed(const Duration(seconds: 4));
+
+    emit(AuthLoadingGetMessagesState());
+    final result =
+        await authRepository.getChatWithIDUser(idOtherPerson: idOtherPerson);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      List<ChatDetailsWithUserResp>? lista = [];
+      if (result.isEmpty) {
+        lista = null;
+      } else {
+        lista = result;
+      }
+      emit(AuthGetChatMessagesSuccessState(chatsToShow: lista));
+    });
+  }
+
+  Future<void> sendMessage(
+      {required String otherPersonId,
+      required String message,
+      String? archivo,
+      String? extensionFile}) async {
+    emit(AuthLoadingGetMessagesState());
+    final result = await authRepository.sendMessage(
+        id: '',
+        otherPersonId: otherPersonId,
+        message: message,
+        archivo: archivo,
+        extension: extensionFile);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthSendMessageSuccessState());
+    });
+  }
+
+  Future<void> actualizarDatos({
+    required String name,
+    required String clave,
+    required String claveExtra,
+    String? archivo,
+  }) async {
+    emit(AuthLoadingGetMessagesState());
+    final result = await authRepository.updateDataUser(
+        name: name, clave: clave, claveExtra: claveExtra, archivo: archivo);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthUpdateDataSuccessState());
+    });
+  }
+
+  Future<void> liberarDatos({required String codeAccess}) async {
+    emit(AuthLoadingGetMessagesState());
+    final result = await authRepository.liberarDatos(codigo: codeAccess);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthChatsGrantedAccessState());
+    });
+  }
+
+  Future<void> archivarDatos({required String otherPersonId}) async {
+    emit(AuthLoadingGetMessagesState());
+    final result =
+        await authRepository.archivarDatos(otherPersonId: otherPersonId);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthArchiveDataSuccessState());
+    });
+  }
+
+  Future<void> buscarUsuarios({required String usuario}) async {
+    emit(AuthLoadingGetMessagesState());
+    final result = await authRepository.buscarUsuarios(usuario: usuario);
+    result.fold((error) {
+      if (error is CustomFailure) {
+        emit(AuthErrorState(message: error.message));
+      }
+    }, (result) async {
+      emit(AuthGetDataUsersState(dataUser: result));
     });
   }
 }

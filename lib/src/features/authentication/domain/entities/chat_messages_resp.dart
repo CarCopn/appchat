@@ -4,12 +4,13 @@
 
 import 'dart:convert';
 
-List<ChatDetailsWithUserResp> chatDetailsWithUserRespFromJson(String str) =>
+List<ChatDetailsWithUserResp?>? chatDetailsWithUserRespFromJson(String str) =>
     List<ChatDetailsWithUserResp>.from(
         json.decode(str).map((x) => ChatDetailsWithUserResp.fromJson(x)));
 
-String chatDetailsWithUserRespToJson(List<ChatDetailsWithUserResp> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String chatDetailsWithUserRespToJson(List<ChatDetailsWithUserResp?>? data) =>
+    json.encode(
+        List<dynamic>.from(data == null ? [] : (data.map((x) => x?.toJson()))));
 
 class ChatDetailsWithUserResp {
   String? id;
@@ -18,6 +19,7 @@ class ChatDetailsWithUserResp {
   String? decodedMessage;
   String? userId;
   String? toId;
+  String? extension;
   DateTime? createdAt;
 
   ChatDetailsWithUserResp({
@@ -28,6 +30,7 @@ class ChatDetailsWithUserResp {
     this.userId,
     this.toId,
     this.createdAt,
+    this.extension,
   });
 
   factory ChatDetailsWithUserResp.fromJson(Map<String, dynamic> json) =>
@@ -38,6 +41,7 @@ class ChatDetailsWithUserResp {
         decodedMessage: json["decoded_message"],
         userId: json["user_id"],
         toId: json["to_id"],
+        extension: json["extension"],
         createdAt: DateTime.parse(json["created_at"]),
       );
 
@@ -48,6 +52,7 @@ class ChatDetailsWithUserResp {
         "decoded_message": decodedMessage,
         "user_id": userId,
         "to_id": toId,
+        "extension": extension,
         "created_at": createdAt?.toIso8601String(),
       };
 }
