@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:chatapp/src/features/authentication/auth.dart';
 import 'package:chatapp/src/features/authentication/domain/chats_manager.dart';
@@ -36,18 +37,37 @@ class _HomeScreenState extends State<HomeScreen> {
       RefreshController(initialRefresh: false);
   ListChatsManager listChatsManager = serviceLocator<ListChatsManager>();
   DateFormat format = DateFormat('yyyy-MM-dd – kk:mm');
+  bool canConsumeApi = false;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       showDialogConfirmCode(context);
+      canConsumeApi = true;
+      setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    canConsumeApi = false;
+    log('Dispose HomeScreen ');
+    super.dispose();
+  }
+
+  Future<void> futureGetChats() async {
+    if (canConsumeApi) {
+      _authCubit.listChats();
+    }
   }
 
   void _onRefresh() async {
     await _authCubit.listChats();
 
     _refreshController.refreshCompleted();
+    await Future.delayed(const Duration(seconds: 2));
+    canConsumeApi = true;
+    setState(() {});
   }
 
   void _onLoading() async {
@@ -205,7 +225,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           topRight: Radius.circular(50),
                         )),
                     child: FutureBuilder(
-                      future: _authCubit.listChatsPeriodic(),
+                      future: futureGetChats(),
+                      //_authCubit.listChatsPeriodic(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         return ListView.separated(
                           physics: const BouncingScrollPhysics(),
@@ -824,6 +845,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _chatItem({required ChatsUserResp chatUser}) {
     return GestureDetector(
       onTap: () {
+        canConsumeApi = false;
+        setState(() {});
         _authCubit.getChatWithIDUser(
             idOtherPerson: chatUser.otherPersonId ?? '0');
         listChatsManager.chatsSelected = chatUser;

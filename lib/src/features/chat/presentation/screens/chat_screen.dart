@@ -172,7 +172,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         CircleAvatar(
                           radius: 25.r,
                           backgroundImage: Image.network(
-                            _listChatsManager.chatsUser?[0].imagen ?? '',
+                            _listChatsManager.chatsSelected?.imagen ?? '',
                             errorBuilder: (context, error, stackTrace) =>
                                 const Placeholder(),
                           ).image,
@@ -182,7 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           width: 15.w,
                         ),
                         Text(
-                          _listChatsManager.chatsUser?[0].nombre ?? '',
+                          _listChatsManager.chatsSelected?.nombre ?? '',
                           style: TextStyle(
                               fontSize: 18.h,
                               fontFamily: ('Quicksand'),
@@ -199,10 +199,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     SizedBox(height: 30.h),
                     Expanded(
                         child: FutureBuilder(
-                      future: _authCubit.getChatWithIDUserPeriodic(
-                          idOtherPerson:
-                              _listChatsManager.chatsSelected?.otherPersonId ??
-                                  ''),
+                      future: getMessages(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         return ListView(
                           controller: _scrollController,
@@ -365,6 +362,13 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> getMessages() async {
+    if (_loadingPath == false && isFileACtive == false) {
+      _authCubit.getChatWithIDUserPeriodic(
+          idOtherPerson: _listChatsManager.chatsSelected?.otherPersonId ?? '');
+    }
   }
 
   Widget _buildButtonToJumpDown() {
