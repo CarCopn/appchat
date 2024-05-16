@@ -79,7 +79,8 @@ class _ChatScreenState extends State<ChatScreen> {
           setState(() {});
         } else if (state is AuthSendMessageSuccessState) {
           _authCubit.getChatWithIDUser(
-              idOtherPerson: _listChatsManager.chatsSelected!.id ?? '');
+              idOtherPerson:
+                  _listChatsManager.chatsSelected!.otherPersonId ?? '');
           setState(() {
             _loadingPath = false;
             fileBase64 = null;
@@ -303,7 +304,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         extensionFile: extensionFile,
                                         archivo: fileBase64,
                                         otherPersonId: _listChatsManager
-                                                .chatsSelected?.id ??
+                                                .chatsSelected?.otherPersonId ??
                                             '1',
                                         message: messageCntrl.text);
                                     messageCntrl.clear();
@@ -331,7 +332,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                           extensionFile: extensionFile,
                                           archivo: fileBase64,
                                           otherPersonId: _listChatsManager
-                                                  .chatsSelected?.id ??
+                                                  .chatsSelected
+                                                  ?.otherPersonId ??
                                               '1',
                                           message: messageCntrl.text);
                                       messageCntrl.clear();

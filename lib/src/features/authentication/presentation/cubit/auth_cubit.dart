@@ -74,7 +74,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> getChatWithIDUserPeriodic(
       {required String idOtherPerson}) async {
-    await Future.delayed(const Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 5));
 
     emit(AuthLoadingGetMessagesState());
     final result =

@@ -131,7 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
           //   ..._listChatsManager.chatsUser ?? [],
           // ];
           _listChatsManager.chatsSelected = state.dataUser;
-          _authCubit.getChatWithIDUser(idOtherPerson: state.dataUser.id);
+          _authCubit.getChatWithIDUser(
+              idOtherPerson: state.dataUser.otherPersonId);
         } else {
           // Navigator.pop(context);
         }

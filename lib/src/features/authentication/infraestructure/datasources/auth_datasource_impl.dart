@@ -339,9 +339,10 @@ class AuthDatasourceImpl extends AuthDatasource {
           } else {
             return ChatsUserResp(
                 id: responseInfo['data'][0]['id'],
+                imagen: responseInfo['data'][0]['imagen'],
                 nombre: responseInfo['data'][0]['nombre_apellido'],
                 message: '',
-                otherPersonId: responseInfo['data'][0]['id'],
+                otherPersonId: responseInfo['data'][0]['other_person_id'],
                 createdAt: DateTime.now());
           }
         }
