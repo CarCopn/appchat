@@ -21,7 +21,6 @@ class MessageService {
       }
     } catch (e) {
       // Manejar errores de red o de conexión
-      print('Error al verificar URL: $e');
     }
 
     return false;

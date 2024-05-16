@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as p;
 
 import 'package:chatapp/src/features/authentication/auth.dart';
@@ -76,7 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
           setState(() {});
         } else if (state is AuthSendMessageSuccessState) {
           _authCubit.getChatWithIDUser(
-              idOtherPerson: _listChatsManager.chatsToShow?[0].toId ?? '');
+              idOtherPerson: _listChatsManager.chatsSelected!.id ?? '');
           setState(() {
             _loadingPath = false;
             fileBase64 = null;
@@ -300,7 +303,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         extensionFile: extensionFile,
                                         archivo: fileBase64,
                                         otherPersonId: _listChatsManager
-                                                .chatsUser?[0].otherPersonId ??
+                                                .chatsSelected?.id ??
                                             '1',
                                         message: messageCntrl.text);
                                     messageCntrl.clear();
@@ -328,8 +331,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           extensionFile: extensionFile,
                                           archivo: fileBase64,
                                           otherPersonId: _listChatsManager
-                                                  .chatsUser?[0]
-                                                  .otherPersonId ??
+                                                  .chatsSelected?.id ??
                                               '1',
                                           message: messageCntrl.text);
                                       messageCntrl.clear();

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:chatapp/src/features/authentication/auth.dart';
 import 'package:chatapp/src/features/authentication/domain/chats_manager.dart';
@@ -9,6 +8,7 @@ import 'package:chatapp/src/injector_container.dart';
 import 'package:chatapp/src/shared/widgets/progress_indicator.dart';
 import 'package:chatapp/src/shared/widgets/snackbar_global.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> futureGetChats() async {
     if (canConsumeApi) {
-      _authCubit.listChats();
+      _authCubit.listChatsPeriodic();
     }
   }
 
@@ -126,13 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
         } else if (state is AuthGetDataUsersState) {
           Navigator.pop(context);
 
-          _listChatsManager.chatsUser = [
-            state.dataUser,
-            ..._listChatsManager.chatsUser ?? [],
-          ];
+          // _listChatsManager.chatsUser = [
+          //   state.dataUser,
+          //   ..._listChatsManager.chatsUser ?? [],
+          // ];
+          _listChatsManager.chatsSelected = state.dataUser;
           _authCubit.getChatWithIDUser(idOtherPerson: state.dataUser.id);
         } else {
-          Navigator.pop(context);
+          // Navigator.pop(context);
         }
       },
       child: const SizedBox(),
@@ -873,21 +874,26 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 300.h,
+                  width: 300.w,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        chatUser.nombre ?? '',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: ('Quicksand'),
-                            fontSize: 16.h),
+                      SizedBox(
+                        width: 140,
+                        child: Text(
+                          chatUser.nombre ?? '',
+                          style: TextStyle(
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                              fontFamily: ('Quicksand'),
+                              fontSize: 17.h),
+                        ),
                       ),
                       Expanded(child: Container()),
                       Text(
                         format.format(chatUser.createdAt ?? DateTime.now()),
-                        style: const TextStyle(color: Colors.white70),
+                        style: const TextStyle(
+                            color: Colors.white70, fontSize: 10),
                       ),
                     ],
                   ),
